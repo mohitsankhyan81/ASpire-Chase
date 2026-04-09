@@ -100,18 +100,41 @@ export const login=async(req:Request<{},{},loginuser>,res:Response)=>{
         if(!ismatch){
             return res.status(400).json({message:"wrong password"});
         }
+        const token = jwt.sign(
+            { userid: user.rows[0].id },
+            process.env.SECRET_KEY as string,
+            { expiresIn: "45d" }
+        )
         console.log(ismatch)
         await pool.query(
             "update usersdata set islogin=true where email=$1",
             [email]
         )
 
-        return res.status(200).json({message:"user login successfully",user:user.rows[0]});
+        return res.status(200).json({message:"user login successfully",user:user.rows[0],token:token});
     }
     catch(error){
         if(error instanceof Error){
         console.log("error in the login ",login)
         return res.status(500).json({message:error.message})
+        }
+    }
+}
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        await pool.query(
+            "UPDATE usersdata SET islogin=false WHERE email=$1",
+            [email]
+        );
+
+        return res.status(200).json({ message: "logout successfully" });
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log("error in logout", error.message);
+            return res.status(500).json({ message: error.message });
         }
     }
 }
