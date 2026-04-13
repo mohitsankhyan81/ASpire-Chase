@@ -7,6 +7,7 @@ import {updatetask} from "../controller/task_controller";
 import {deletetask} from "../controller/task_controller";
 import {getcount} from "../controller/task_controller";
 import {gettaskbystatus} from "../controller/task_controller";
+import {gettaskbypriority} from "../controller/task_controller";
  
 const taskroute =express.Router();
 
@@ -17,4 +18,5 @@ taskroute.put("/updatetask/:id",authentication,updatetask);
 taskroute.delete("/deletetask/:id",authentication,deletetask);
 taskroute.get("/getcount",authentication,getcount);
 taskroute.get("/tasks/filter",authentication,gettaskbystatus);
+taskroute.get("/task/filter",authentication,gettaskbypriority)
 export default taskroute

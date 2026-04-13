@@ -190,4 +190,22 @@ export const gettaskbystatus=async(req:Request,res:Response)=>{
     }
 }
 
+export const gettaskbypriority=async(req:Request,res:Response)=>{
+    try{
+        const {priority}=req.query
+        const user=(req as any).user;
 
+        const data=await pool.query(
+            "select * from tasks where user_id=$1 and priority=$2",
+            [user.id,priority]
+        )
+
+        return res.status(200).json({success:true,data:data.rows});
+    }
+    catch(error){
+        if(error instanceof Error){
+            console.log("error in the priority ",error.message)
+            return res.status(500).json({success:false,error:error.message})
+        }
+    }
+}
